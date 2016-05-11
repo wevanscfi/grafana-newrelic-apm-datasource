@@ -1,0 +1,18 @@
+<h3 class="page-heading">NewRelic API Credentials</h3>
+<!-- Included partial -->
+<div class="gf-form-group max-width-30">
+  <div class="gf-form">
+    <label class="gf-form-label width-13">Application ID</label>
+    <input type="text" class="gf-form-input max-width-18" ng-model='ctrl.current.jsonData.app_id' placeholder="default"></input>
+    <info-popover mode="right-absolute">
+      The id of the apllication that you want to pull data from
+    </info-popover>
+  </div>
+  <div class="gf-form">
+    <label class="gf-form-label width-13">API Key</label>
+    <input type="text" class="gf-form-input max-width-18" ng-model='ctrl.current.jsonData.api_key' placeholder="default"></input>
+    <info-popover mode="right-absolute">
+      The API key generated for autherization in the APM dashboard.
+    </info-popover>
+  </div>
+</div>
