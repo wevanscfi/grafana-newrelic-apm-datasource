@@ -6,10 +6,7 @@ This datasource has only been tested with Grafana Version 3.0.0-beta7 and 3.0.1 
 
 ##To install and use
 
-1. Add the contents of this repository to the public/app/plugins/datasource/newrelic directory of your grafana installation and then recompile assets.
-```
-npm run build
-```
+1. Add the contents of this repository to /usr/share/grafana/public/app/plugins/datasource/newrelic and then restart the grafana server.
 
 2. Create a new datasource and select NewRelic from the drop down. You will need your Application ID, and API Key for the NewRelic API.
 
