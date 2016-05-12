@@ -1,10 +1,10 @@
 {
-  "name": "Newrelic",
+  "name": "NewRelic",
   "type": "datasource",
   "id": "newrelic",
 
   "metrics": true,
-  "annotations": true,
+  "annotations": false,
 
   "info": {
     "author": {
