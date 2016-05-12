@@ -113,12 +113,13 @@ System.register(['moment'], function(exports_1) {
                         };
                         var promises = [];
                         for (var q = 0; q < requests.length; q++) {
-                            var promise = self.makeRequest(requests[q]).then(function (result) {
-                                mergedResults.data = mergedResults.data.concat(self._parseMetricResults(result));
-                            });
+                            var promise = self.makeRequest(requests[q]);
                             promises.push(promise);
                         }
-                        self.$q.all(promises).then(function (values) {
+                        self.$q.all(promises).then(function (data) {
+                            data.forEach(function (result) {
+                                mergedResults.data = mergedResults.data.concat(self._parseMetricResults(result));
+                            });
                             resolve(mergedResults);
                         });
                     });
