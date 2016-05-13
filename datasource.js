@@ -21,15 +21,15 @@ System.register(['moment'], function(exports_1) {
                 }
                 NewRelicDatasource.prototype.query = function (options) {
                     var self = this;
-                    var targets = options.targets;
                     var requests = [];
-                    for (var t = 0; t < targets.length; t++) {
-                        var target = targets[t];
-                        var value = targets[t].value || null;
+                    options.targets.forEach(function (target) {
+                        var value = target.value || null;
+                        var type = target.type || 'applications';
+                        var id = type === 'applications' ? self.appId : target.server_id;
                         var request = {
                             refId: target.refId,
                             alias: target.alias,
-                            url: this.apiUrl + '/v2/applications/' + this.appId + '/metrics/data.json',
+                            url: self.apiUrl + '/v2/' + type + '/' + id + '/metrics/data.json',
                             params: {
                                 names: [target.target],
                                 to: options.range.to,
@@ -40,8 +40,10 @@ System.register(['moment'], function(exports_1) {
                         if (value) {
                             request.params["values"] = [value];
                         }
-                        requests.push(request);
-                    }
+                        if (id) {
+                            requests.push(request);
+                        }
+                    });
                     return this.makeMultipleRequests(requests);
                 };
                 NewRelicDatasource.prototype.testDatasource = function () {
@@ -69,32 +71,32 @@ System.register(['moment'], function(exports_1) {
                     return seconds;
                 };
                 NewRelicDatasource.prototype._parseMetricResults = function (results) {
+                    var self = this;
                     var targetList = [];
                     var metrics = results.response.metric_data.metrics;
-                    for (var m = 0; m < metrics.length; m++) {
-                        metrics[m].alias = results.alias;
-                        targetList = targetList.concat(this._parseseacrhTarget(metrics[m]));
-                    }
+                    metrics.forEach(function (metric) {
+                        metric.alias = results.alias;
+                        targetList = targetList.concat(self._parseseacrhTarget(metric));
+                    });
                     return targetList;
                 };
                 NewRelicDatasource.prototype._parseseacrhTarget = function (metric) {
+                    var self = this;
                     var targets = Object.keys(metric.timeslices[0].values);
                     var targetData = [];
-                    //get each metric
-                    for (var g = 0; g < targets.length; g++) {
+                    targets.forEach(function (target) {
                         targetData.push({
-                            target: this._parseTargetAlias(metric, targets[g]),
-                            datapoints: this._getTargetSeries(targets[g], metric)
+                            target: self._parseTargetAlias(metric, target),
+                            datapoints: self._getTargetSeries(target, metric)
                         });
-                    }
+                    });
                     return targetData;
                 };
                 NewRelicDatasource.prototype._getTargetSeries = function (target, metric) {
                     var series = [];
-                    for (var s = 0; s < metric.timeslices.length; s++) {
-                        var slice = metric.timeslices[s];
+                    metric.timeslices.forEach(function (slice) {
                         series.push([slice.values[target], moment_1.default(slice.to).valueOf()]);
-                    }
+                    });
                     return series;
                 };
                 NewRelicDatasource.prototype._parseTargetAlias = function (metric, value) {
@@ -112,10 +114,9 @@ System.register(['moment'], function(exports_1) {
                             data: []
                         };
                         var promises = [];
-                        for (var q = 0; q < requests.length; q++) {
-                            var promise = self.makeRequest(requests[q]);
-                            promises.push(promise);
-                        }
+                        requests.forEach(function (request) {
+                            promises.push(self.makeRequest(request));
+                        });
                         self.$q.all(promises).then(function (data) {
                             data.forEach(function (result) {
                                 mergedResults.data = mergedResults.data.concat(self._parseMetricResults(result));
