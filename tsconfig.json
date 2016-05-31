@@ -1,0 +1,17 @@
+{
+    "compilerOptions": {
+        "sourceMap": true,
+        "declaration": true,
+        "outDir": "dist/",
+        "noImplicitAny": false,
+        "target": "es5",
+        "sourceRoot": "src/",
+        "module": "system",
+        "noEmitOnError": true,
+        "emitDecoratorMetadata": true,
+        "experimentalDecorators": true
+    },
+    "files": [
+        "src/**/*.ts"
+    ]
+}
