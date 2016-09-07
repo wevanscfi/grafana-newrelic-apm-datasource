@@ -1,37 +1,31 @@
 <query-editor-row query-ctrl="ctrl">
   <div class="gf-form-inline">
-    <div class="gf-form">
-      <select ng-model="ctrl.target.type" class="gf-form-input"
+    <div class="gf-form gf-form--grow">
+      <select ng-model="ctrl.target.type" class="gf-form-input width-8"
                 ng-options="type.value as type.label for type in ctrl.metric_types"
                 ng-change="ctrl.refresh()">
       </select>
-      <label ng-show="ctrl.target.type == 'servers'" class="gf-form-label query-keyword width-8">SERVER ID</label>
-      <input ng-show="ctrl.target.type == 'servers'" type="text" class="gf-form-input" ng-model="ctrl.target.server_id" spellcheck="false" ng-blur="ctrl.refresh()"></input>
-    </div>
-    <div class="gf-form gf-form--grow">
       <label class="gf-form-label gf-form-label--grow"></label>
+      <label ng-show="ctrl.target.type == 'servers'" class="gf-form-label query-keyword width-8">SERVER ID</label>
+      <input ng-show="ctrl.target.type == 'servers'" type="text" class="gf-form-input width-12" ng-model="ctrl.target.server_id" spellcheck="false" ng-blur="ctrl.refresh()"></input>
+      <label ng-show="ctrl.target.type == 'applications'" class="gf-form-label query-keyword width-8">APP ID</label>
+      <input ng-show="ctrl.target.type == 'applications'" type="text" class="gf-form-input width-12" ng-model="ctrl.target.app_id" spellcheck="false" ng-blur="ctrl.refresh()"></input>
     </div>
   </div>
 
   <div class="gf-form-inline">
-    <div class="gf-form">
+    <div class="gf-form gf-form--grow">
       <label class="gf-form-label query-keyword width-8">NAMESPACE</label>
       <input type="text" class="gf-form-input" ng-model="ctrl.target.target" spellcheck="false" ng-blur="ctrl.refresh()"></input>
-      <label class="gf-form-label query-keyword width-5">VALUE</label>
-      <input type="text" class="gf-form-input" ng-model="ctrl.target.value" spellcheck="false" ng-blur="ctrl.refresh()"></input>
-    </div>
-    <div class="gf-form gf-form--grow">
-      <label class="gf-form-label gf-form-label--grow"></label>
+      <label class="gf-form-label query-keyword width-8">VALUE</label>
+      <input type="text" class="gf-form-input width-12" ng-model="ctrl.target.value" spellcheck="false" ng-blur="ctrl.refresh()"></input>
     </div>
   </div> 
 
   <div class="gf-form-inline">
-    <div class="gf-form">
+    <div class="gf-form gf-form--grow">
       <label class="gf-form-label query-keyword width-8">ALIAS BY</label>
       <input type="text" class="gf-form-input" ng-model="ctrl.target.alias" spellcheck='false' placeholder="Naming pattern" ng-blur="ctrl.refresh()">
-    </div>
-    <div class="gf-form gf-form--grow">
-      <label class="gf-form-label gf-form-label--grow"></label>
     </div>
   </div>
 </query-editor-row>

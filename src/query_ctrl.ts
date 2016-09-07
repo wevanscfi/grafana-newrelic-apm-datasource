@@ -4,6 +4,7 @@ import {QueryCtrl} from 'app/plugins/sdk';
 class NewRelicQueryCtrl extends QueryCtrl {
   static templateUrl = 'partials/query.editor.html';
   metric_types: any;
+  datasource: any;
   type: any;
 
   /** @ngInject **/
@@ -16,6 +17,9 @@ class NewRelicQueryCtrl extends QueryCtrl {
     if (!this.target.type) {
       this.target.type = this.metric_types[0].value;
     };
+    if (!this.target.app_id) {
+      this.target.app_id = this.datasource.appId;
+    }
   };
 }
 

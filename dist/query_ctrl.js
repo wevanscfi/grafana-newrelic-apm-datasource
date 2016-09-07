@@ -25,6 +25,9 @@ System.register(['app/plugins/sdk'], function(exports_1) {
                         this.target.type = this.metric_types[0].value;
                     }
                     ;
+                    if (!this.target.app_id) {
+                        this.target.app_id = this.datasource.appId;
+                    }
                 }
                 ;
                 NewRelicQueryCtrl.templateUrl = 'partials/query.editor.html';

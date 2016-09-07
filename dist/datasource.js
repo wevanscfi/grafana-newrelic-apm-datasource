@@ -25,7 +25,9 @@ System.register(['moment'], function(exports_1) {
                     options.targets.forEach(function (target) {
                         var value = target.value || null;
                         var type = target.type || 'applications';
-                        var id = type === 'applications' ? self.appId : target.server_id;
+                        /* Todo: clean up defaulting app_id based on datasource config */
+                        var app_id = target.app_id || self.appId;
+                        var id = type === 'applications' ? app_id : target.server_id;
                         var request = {
                             refId: target.refId,
                             alias: target.alias,
@@ -139,7 +141,7 @@ System.register(['moment'], function(exports_1) {
                     }, function (err) {
                         if (err.status !== 0 || err.status >= 300) {
                             if (err.data && err.data.error) {
-                                throw { message: 'New Relic Error Response: ' + err.data.error, data: err.data, config: err.config };
+                                throw { message: 'New Relic Error Response: ' + err.data.error.title, data: err.data, config: err.config };
                             }
                             else {
                                 throw { message: 'New Relic Error: ' + err.message, data: err.data, config: err.config };
