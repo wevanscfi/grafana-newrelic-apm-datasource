@@ -1,12 +1,16 @@
 # New Relic APM Datasource -  Custom Plugin
 This is a simple datasource for use with the New Relic APM API. 
 
+## Security Information
+This data source should not be used over http or if you may have malicious authorized users.
+Updates are in progres to add an option for proxying requests to NR to increase the security of this plugin.
+
 ## Supported Version Information
 This datasource has only been tested with Grafana Version 3.0.0-beta7 and 3.0.1 stable and higher.
 
 ##To install and use
 
-1. Add the contents of this repository to /usr/share/grafana/public/app/plugins/datasource/newrelic and then restart the grafana server.
+1. Add the contents of this repository to your grafana plugins directory (default /var/lib/grafana/plugins) and then restart the grafana server.
 
 2. Create a new datasource and select NewRelic from the drop down. You will need your Application ID, and API Key for the NewRelic API.
 
