@@ -17,9 +17,6 @@ class NewRelicQueryCtrl extends QueryCtrl {
     if (!this.target.type) {
       this.target.type = this.metric_types[0].value;
     };
-    if (!this.target.app_id) {
-      this.target.app_id = this.datasource.appId;
-    }
   };
 }
 
