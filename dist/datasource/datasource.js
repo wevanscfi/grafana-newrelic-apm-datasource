@@ -15,19 +15,17 @@ System.register(['moment'], function(exports_1) {
                     this.templateSrv = templateSrv;
                     this.name = instanceSettings.name;
                     this.appId = instanceSettings.jsonData.app_id;
-                    this.apiKey = instanceSettings.jsonData.api_key;
-                    this.apiUrl = "https://api.newrelic.com";
-                    this.baseUrl = 'api/plugin-proxy/newrelic-app';
+                    this.baseApiUrl = 'api/plugin-proxy/newrelic-app';
                     this.backendSrv = backendSrv;
                 }
                 NewRelicDatasource.prototype.query = function (options) {
-                    var self = this;
+                    var _this = this;
                     var requests = [];
                     options.targets.forEach(function (target) {
                         var value = target.value || null;
                         var type = target.type || 'applications';
                         /* Todo: clean up defaulting app_id based on datasource config */
-                        var app_id = target.app_id || self.appId;
+                        var app_id = target.app_id || _this.appId;
                         var id = type === 'applications' ? app_id : target.server_id;
                         var request = {
                             refId: target.refId,
@@ -37,7 +35,7 @@ System.register(['moment'], function(exports_1) {
                                 names: [target.target],
                                 to: options.range.to,
                                 from: options.range.from,
-                                period: self._convertToSeconds(options.interval || "60s")
+                                period: _this._convertToSeconds(options.interval || "60s")
                             }
                         };
                         if (value) {
@@ -74,23 +72,23 @@ System.register(['moment'], function(exports_1) {
                     return seconds;
                 };
                 NewRelicDatasource.prototype._parseMetricResults = function (results) {
-                    var self = this;
+                    var _this = this;
                     var targetList = [];
                     var metrics = results.response.metric_data.metrics;
                     metrics.forEach(function (metric) {
                         metric.alias = results.alias;
-                        targetList = targetList.concat(self._parseseacrhTarget(metric));
+                        targetList = targetList.concat(_this._parseseacrhTarget(metric));
                     });
                     return targetList;
                 };
                 NewRelicDatasource.prototype._parseseacrhTarget = function (metric) {
-                    var self = this;
+                    var _this = this;
                     var targets = Object.keys(metric.timeslices[0].values);
                     var targetData = [];
                     targets.forEach(function (target) {
                         targetData.push({
-                            target: self._parseTargetAlias(metric, target),
-                            datapoints: self._getTargetSeries(target, metric)
+                            target: _this._parseTargetAlias(metric, target),
+                            datapoints: _this._getTargetSeries(target, metric)
                         });
                     });
                     return targetData;
@@ -111,18 +109,18 @@ System.register(['moment'], function(exports_1) {
                     }
                 };
                 NewRelicDatasource.prototype.makeMultipleRequests = function (requests) {
-                    var self = this;
-                    return this.$q(function (resolve, reject) {
+                    var _this = this;
+                    return new Promise(function (resolve, reject) {
                         var mergedResults = {
                             data: []
                         };
                         var promises = [];
                         requests.forEach(function (request) {
-                            promises.push(self.makeRequest(request));
+                            promises.push(_this.makeRequest(request));
                         });
-                        self.$q.all(promises).then(function (data) {
+                        return Promise.all(promises).then(function (data) {
                             data.forEach(function (result) {
-                                mergedResults.data = mergedResults.data.concat(self._parseMetricResults(result));
+                                mergedResults.data = mergedResults.data.concat(_this._parseMetricResults(result));
                             });
                             resolve(mergedResults);
                         });
@@ -131,7 +129,7 @@ System.register(['moment'], function(exports_1) {
                 NewRelicDatasource.prototype.makeRequest = function (request) {
                     var options = {
                         method: "get",
-                        url: this.baseUrl + request.url,
+                        url: this.baseApiUrl + request.url,
                         params: request.params,
                         data: request.data,
                     };

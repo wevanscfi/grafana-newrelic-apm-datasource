@@ -4,29 +4,24 @@ import moment from 'moment';
 class NewRelicDatasource {
   name: string;
   appId: any;
-  apiKey: any;
-  apiUrl: string;
-  baseUrl: string;
+  baseApiUrl: string;
 
   /** @ngInject */
   constructor(instanceSettings, private $q, private backendSrv, private templateSrv) {
     this.name = instanceSettings.name;
     this.appId = instanceSettings.jsonData.app_id;
-    this.apiKey = instanceSettings.jsonData.api_key;
-    this.apiUrl = "https://api.newrelic.com";
-    this.baseUrl = 'api/plugin-proxy/newrelic-app';
+    this.baseApiUrl = 'api/plugin-proxy/newrelic-app';
     this.backendSrv = backendSrv;
   }
 
   query(options) {
-    var self = this;
     var requests = [];
 
-    options.targets.forEach(function(target){
+    options.targets.forEach(target => {
       var value = target.value || null;
       var type = target.type || 'applications';
       /* Todo: clean up defaulting app_id based on datasource config */
-      var app_id = target.app_id || self.appId;
+      var app_id = target.app_id || this.appId;
       var id = type === 'applications' ? app_id : target.server_id;
       var request = {
         refId: target.refId,
@@ -36,7 +31,7 @@ class NewRelicDatasource {
           names: [target.target],
           to: options.range.to,
           from: options.range.from,
-          period: self._convertToSeconds(options.interval || "60s")
+          period: this._convertToSeconds(options.interval || "60s")
         }
       };
       if (value) {
@@ -77,24 +72,22 @@ class NewRelicDatasource {
   }
 
   _parseMetricResults(results) {
-    var self = this;
     var targetList = [];
     var metrics = results.response.metric_data.metrics;
-    metrics.forEach(function(metric){
+    metrics.forEach(metric => {
       metric.alias = results.alias;
-      targetList = targetList.concat(self._parseseacrhTarget(metric));
+      targetList = targetList.concat(this._parseseacrhTarget(metric));
     });
     return targetList;
   }
 
   _parseseacrhTarget(metric) {
-    var self = this;
     var targets = Object.keys(metric.timeslices[0].values);
     var targetData = [];
-    targets.forEach(function(target){
+    targets.forEach(target => {
       targetData.push({
-        target: self._parseTargetAlias(metric, target),
-        datapoints: self._getTargetSeries(target, metric)
+        target: this._parseTargetAlias(metric, target),
+        datapoints: this._getTargetSeries(target, metric)
       });
     });
     return targetData;
@@ -117,18 +110,18 @@ class NewRelicDatasource {
   }
 
   makeMultipleRequests(requests) {
-    var self = this;
-    return this.$q(function(resolve, reject) {
+    return new Promise((resolve, reject) => {
       var mergedResults = {
         data: []
       };
       var promises = [];
-      requests.forEach(function(request){
-        promises.push(self.makeRequest(request));
+      requests.forEach(request => {
+        promises.push(this.makeRequest(request));
       });
-      self.$q.all(promises).then((data) => {
-        data.forEach(function(result){
-          mergedResults.data = mergedResults.data.concat(self._parseMetricResults(result));
+
+      return Promise.all(promises).then(data => {
+        data.forEach(result => {
+          mergedResults.data = mergedResults.data.concat(this._parseMetricResults(result));
         });
         resolve(mergedResults);
       });
@@ -138,7 +131,7 @@ class NewRelicDatasource {
   makeRequest(request) {
     var options: any = {
       method: "get",
-      url: this.baseUrl + request.url,
+      url: this.baseApiUrl + request.url,
       params: request.params,
       data:   request.data,
     };

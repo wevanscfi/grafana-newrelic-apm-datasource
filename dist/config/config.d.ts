@@ -1,7 +1,7 @@
 export declare class NewRelicAppConfigCtrl {
+    private backendSrv;
     appModel: any;
     appEditCtrl: any;
-    backendSrv: any;
     jsonData: any;
     apiValidated: boolean;
     apiError: boolean;

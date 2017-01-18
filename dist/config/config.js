@@ -6,6 +6,7 @@ System.register([], function(exports_1) {
             NewRelicAppConfigCtrl = (function () {
                 function NewRelicAppConfigCtrl($scope, $injector, backendSrv) {
                     this.backendSrv = backendSrv;
+                    this.backendSrv = backendSrv;
                     console.log(this);
                     this.appEditCtrl.setPreUpdateHook(this.preUpdate.bind(this));
                     if (!this.appModel.jsonData) {

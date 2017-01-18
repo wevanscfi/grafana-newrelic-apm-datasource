@@ -5,19 +5,17 @@ declare class NewRelicDatasource {
     private templateSrv;
     name: string;
     appId: any;
-    apiKey: any;
-    apiUrl: string;
-    baseUrl: string;
+    baseApiUrl: string;
     /** @ngInject */
     constructor(instanceSettings: any, $q: any, backendSrv: any, templateSrv: any);
-    query(options: any): any;
+    query(options: any): Promise<{}>;
     testDatasource(): any;
     _convertToSeconds(interval: any): number;
     _parseMetricResults(results: any): any[];
     _parseseacrhTarget(metric: any): any[];
     _getTargetSeries(target: any, metric: any): any[];
     _parseTargetAlias(metric: any, value: any): any;
-    makeMultipleRequests(requests: any): any;
+    makeMultipleRequests(requests: any): Promise<{}>;
     makeRequest(request: any): any;
 }
 export { NewRelicDatasource };

@@ -1,12 +1,11 @@
 export class NewRelicAppConfigCtrl {
   appModel: any;
   appEditCtrl: any;
-  backendSrv: any;
   jsonData: any;
   apiValidated: boolean;
   apiError: boolean;
 
-  constructor($scope, $injector, backendSrv) {
+  constructor($scope, $injector, private backendSrv) {
     this.backendSrv = backendSrv;
     console.log(this);
 
