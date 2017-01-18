@@ -1,10 +1,18 @@
 {
-  "name": "NewRelic",
-  "type": "datasource",
-  "id": "newrelic",
+  "name": "NewRelic App",
+  "type": "app",
+  "id": "newrelic-app",
 
-  "metrics": true,
-  "annotations": false,
+  "routes": [
+    {
+      "path": "v2/*",
+      "method": "*",
+      "url": "https://api.newrelic.com/v2",
+      "headers": [
+        {"name": "X-Api-Key", "content": "{{.SecureJsonData.apiKey}}"}
+      ]
+    }
+  ],
 
   "info": {
     "author": {
