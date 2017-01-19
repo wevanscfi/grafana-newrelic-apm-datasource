@@ -1,8 +1,11 @@
-System.register(['./datasource', './query_ctrl'], function(exports_1) {
-    var datasource_1, query_ctrl_1;
-    var NewRelicConfigCtrl, NewRelicQueryOptionsCtrl;
+System.register(['./config_ctrl', './datasource', './query_ctrl'], function(exports_1) {
+    var config_ctrl_1, datasource_1, query_ctrl_1;
+    var NewRelicQueryOptionsCtrl;
     return {
         setters:[
+            function (config_ctrl_1_1) {
+                config_ctrl_1 = config_ctrl_1_1;
+            },
             function (datasource_1_1) {
                 datasource_1 = datasource_1_1;
             },
@@ -10,12 +13,6 @@ System.register(['./datasource', './query_ctrl'], function(exports_1) {
                 query_ctrl_1 = query_ctrl_1_1;
             }],
         execute: function() {
-            NewRelicConfigCtrl = (function () {
-                function NewRelicConfigCtrl() {
-                }
-                NewRelicConfigCtrl.templateUrl = 'datasource/partials/config.html';
-                return NewRelicConfigCtrl;
-            })();
             NewRelicQueryOptionsCtrl = (function () {
                 function NewRelicQueryOptionsCtrl() {
                 }
@@ -25,7 +22,7 @@ System.register(['./datasource', './query_ctrl'], function(exports_1) {
             exports_1("Datasource", datasource_1.NewRelicDatasource);
             exports_1("QueryCtrl", query_ctrl_1.NewRelicQueryCtrl);
             exports_1("QueryOptionsCtrl", NewRelicQueryOptionsCtrl);
-            exports_1("ConfigCtrl", NewRelicConfigCtrl);
+            exports_1("ConfigCtrl", config_ctrl_1.NewRelicDSConfigCtrl);
         }
     }
 });
