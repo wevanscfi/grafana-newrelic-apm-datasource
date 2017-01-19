@@ -1,3 +1,4 @@
+/// <reference path="../typings/tsd.d.ts" />
 export declare class NewRelicAppConfigCtrl {
     private backendSrv;
     appModel: any;

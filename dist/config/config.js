@@ -1,3 +1,4 @@
+///<reference path="../typings/tsd.d.ts" />
 System.register([], function(exports_1) {
     var NewRelicAppConfigCtrl;
     return {
