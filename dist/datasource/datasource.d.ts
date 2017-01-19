@@ -1,4 +1,4 @@
-/// <reference path="../../src/typings/tsd.d.ts" />
+/// <reference path="../typings/tsd.d.ts" />
 declare class NewRelicDatasource {
     private $q;
     private backendSrv;
@@ -16,6 +16,7 @@ declare class NewRelicDatasource {
     _getTargetSeries(target: any, metric: any): any[];
     _parseTargetAlias(metric: any, value: any): any;
     makeMultipleRequests(requests: any): Promise<{}>;
-    makeRequest(request: any): any;
+    getMetricNames(application_id: any): any;
+    makeApiRequest(request: any): any;
 }
 export { NewRelicDatasource };

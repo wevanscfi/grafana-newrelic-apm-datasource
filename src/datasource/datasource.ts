@@ -47,7 +47,7 @@ class NewRelicDatasource {
   testDatasource() {
     var url = '/v2/applications/' +  this.appId + '.json';
 
-    return this.makeRequest({url: url}).then(() => {
+    return this.makeApiRequest({url: url}).then(() => {
       return { status: "success", message: "Data source is working", title: "Success" };
     });
   }
@@ -116,7 +116,7 @@ class NewRelicDatasource {
       };
       var promises = [];
       requests.forEach(request => {
-        promises.push(this.makeRequest(request));
+        promises.push(this.makeApiRequest(request));
       });
 
       return Promise.all(promises).then(data => {
@@ -128,7 +128,25 @@ class NewRelicDatasource {
     });
   }
 
-  makeRequest(request) {
+  getMetricNames(application_id) {
+    if (!application_id) {
+      application_id = this.appId;
+    }
+
+    let request = {
+      url: '/v2/applications/' + application_id + '/metrics.json'
+    };
+
+    return this.makeApiRequest(request).then(result => {
+      if (result && result.response && result.response.metrics) {
+        return result.response.metrics;
+      } else {
+        return [];
+      }
+    });
+  }
+
+  makeApiRequest(request) {
     var options: any = {
       method: "get",
       url: this.baseApiUrl + request.url,

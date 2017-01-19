@@ -14,3 +14,8 @@ declare module 'app/plugins/sdk' {
   QueryCtrl,
   };
 }
+
+declare module 'lodash' {
+  var lodash: any;
+  export default lodash;
+}

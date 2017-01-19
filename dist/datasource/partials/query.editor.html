@@ -14,17 +14,31 @@
   </div>
 
   <div class="gf-form-inline">
-    <div class="gf-form gf-form--grow">
-      <label class="gf-form-label query-keyword width-8">NAMESPACE</label>
-      <input type="text" class="gf-form-input" ng-model="ctrl.target.target" spellcheck="false" ng-blur="ctrl.refresh()"></input>
-      <label class="gf-form-label query-keyword width-8">VALUE</label>
-      <input type="text" class="gf-form-input width-12" ng-model="ctrl.target.value" spellcheck="false" ng-blur="ctrl.refresh()"></input>
+    <div class="gf-form">
+      <label class="gf-form-label query-keyword width-8">Namespace</label>
     </div>
-  </div> 
+    <metric-segment-model property="ctrl.target.target"
+      get-options="ctrl.getMetricNamespaces()"
+      on-change="ctrl.onChangeInternal()"
+      custom="true">
+    </metric-segment-model>
+
+    <div class="gf-form">
+      <label class="gf-form-label query-keyword width-8">Metric</label>
+    </div>
+    <metric-segment-model property="ctrl.target.value"
+      get-options="ctrl.getMetricValues()"
+      on-change="ctrl.onChangeInternal()">
+    </metric-segment-model>
+
+    <div class="gf-form gf-form--grow">
+      <div class="gf-form-label gf-form-label--grow"></div>
+    </div>
+  </div>
 
   <div class="gf-form-inline">
     <div class="gf-form gf-form--grow">
-      <label class="gf-form-label query-keyword width-8">ALIAS BY</label>
+      <label class="gf-form-label query-keyword width-8">Alias By</label>
       <input type="text" class="gf-form-input" ng-model="ctrl.target.alias" spellcheck='false' placeholder="Naming pattern" ng-blur="ctrl.refresh()">
     </div>
   </div>

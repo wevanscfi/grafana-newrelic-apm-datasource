@@ -49,7 +49,7 @@ System.register(['moment'], function(exports_1) {
                 };
                 NewRelicDatasource.prototype.testDatasource = function () {
                     var url = '/v2/applications/' + this.appId + '.json';
-                    return this.makeRequest({ url: url }).then(function () {
+                    return this.makeApiRequest({ url: url }).then(function () {
                         return { status: "success", message: "Data source is working", title: "Success" };
                     });
                 };
@@ -116,7 +116,7 @@ System.register(['moment'], function(exports_1) {
                         };
                         var promises = [];
                         requests.forEach(function (request) {
-                            promises.push(_this.makeRequest(request));
+                            promises.push(_this.makeApiRequest(request));
                         });
                         return Promise.all(promises).then(function (data) {
                             data.forEach(function (result) {
@@ -126,7 +126,23 @@ System.register(['moment'], function(exports_1) {
                         });
                     });
                 };
-                NewRelicDatasource.prototype.makeRequest = function (request) {
+                NewRelicDatasource.prototype.getMetricNames = function (application_id) {
+                    if (!application_id) {
+                        application_id = this.appId;
+                    }
+                    var request = {
+                        url: '/v2/applications/' + application_id + '/metrics.json'
+                    };
+                    return this.makeApiRequest(request).then(function (result) {
+                        if (result && result.response && result.response.metrics) {
+                            return result.response.metrics;
+                        }
+                        else {
+                            return [];
+                        }
+                    });
+                };
+                NewRelicDatasource.prototype.makeApiRequest = function (request) {
                     var options = {
                         method: "get",
                         url: this.baseApiUrl + request.url,
