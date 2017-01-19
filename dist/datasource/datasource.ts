@@ -137,9 +137,25 @@ class NewRelicDatasource {
       url: '/v2/applications/' + application_id + '/metrics.json'
     };
 
-    return this.makeApiRequest(request).then(result => {
+    return this.makeApiRequest(request)
+    .then(result => {
       if (result && result.response && result.response.metrics) {
         return result.response.metrics;
+      } else {
+        return [];
+      }
+    });
+  }
+
+  getApplications() {
+    let request = {
+      url: '/v2/applications.json'
+    };
+
+    return this.makeApiRequest(request)
+    .then(result => {
+      if (result && result.response && result.response.applications) {
+        return result.response.applications;
       } else {
         return [];
       }

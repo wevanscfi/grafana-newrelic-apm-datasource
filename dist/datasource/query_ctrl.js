@@ -26,11 +26,13 @@ System.register(['app/plugins/sdk', 'lodash'], function(exports_1) {
                     ];
                     var target_defaults = {
                         type: 'applications',
+                        app_id: null,
                         target: 'Select namespace',
                         value: 'Select metric'
                     };
                     lodash_1.default.defaultsDeep(this.target, target_defaults);
                     this.getMetrics();
+                    this.getApplications();
                 }
                 ;
                 NewRelicQueryCtrl.prototype.getMetrics = function () {
@@ -66,6 +68,23 @@ System.register(['app/plugins/sdk', 'lodash'], function(exports_1) {
                             return [];
                         }
                     });
+                };
+                NewRelicQueryCtrl.prototype.getApplications = function () {
+                    var _this = this;
+                    if (this.apps) {
+                        return Promise.resolve(this.apps);
+                    }
+                    else {
+                        return this.datasource.getApplications()
+                            .then(function (apps) {
+                            apps = lodash_1.default.map(apps, function (app) {
+                                return { name: app.name, id: app.id };
+                            });
+                            apps.push({ name: 'Default', id: null });
+                            _this.apps = apps;
+                            return apps;
+                        });
+                    }
                 };
                 NewRelicQueryCtrl.prototype.onChangeInternal = function () {
                     this.refresh();

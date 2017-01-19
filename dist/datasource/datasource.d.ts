@@ -17,6 +17,7 @@ declare class NewRelicDatasource {
     _parseTargetAlias(metric: any, value: any): any;
     makeMultipleRequests(requests: any): Promise<{}>;
     getMetricNames(application_id: any): any;
+    getApplications(): any;
     makeApiRequest(request: any): any;
 }
 export { NewRelicDatasource };

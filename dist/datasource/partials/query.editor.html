@@ -8,8 +8,16 @@
       <label class="gf-form-label gf-form-label--grow"></label>
       <label ng-show="ctrl.target.type == 'servers'" class="gf-form-label query-keyword width-8">SERVER ID</label>
       <input ng-show="ctrl.target.type == 'servers'" type="text" class="gf-form-input width-12" ng-model="ctrl.target.server_id" spellcheck="false" ng-blur="ctrl.refresh()"></input>
-      <label ng-show="ctrl.target.type == 'applications'" class="gf-form-label query-keyword width-8">APP ID</label>
-      <input ng-show="ctrl.target.type == 'applications'" type="text" class="gf-form-input width-12" ng-model="ctrl.target.app_id" spellcheck="false" ng-blur="ctrl.refresh()"></input>
+
+      <label ng-show="ctrl.target.type == 'applications'"
+        class="gf-form-label query-keyword width-8">
+        Application
+      </label>
+      <select ng-show="ctrl.target.type == 'applications'"
+        ng-model="ctrl.target.app_id" class="gf-form-input width-15"
+        ng-options="app.id as app.name for app in ctrl.apps"
+        ng-change="ctrl.refresh()">
+      </select>
     </div>
   </div>
 

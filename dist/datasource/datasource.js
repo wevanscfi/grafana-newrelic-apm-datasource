@@ -133,9 +133,24 @@ System.register(['moment'], function(exports_1) {
                     var request = {
                         url: '/v2/applications/' + application_id + '/metrics.json'
                     };
-                    return this.makeApiRequest(request).then(function (result) {
+                    return this.makeApiRequest(request)
+                        .then(function (result) {
                         if (result && result.response && result.response.metrics) {
                             return result.response.metrics;
+                        }
+                        else {
+                            return [];
+                        }
+                    });
+                };
+                NewRelicDatasource.prototype.getApplications = function () {
+                    var request = {
+                        url: '/v2/applications.json'
+                    };
+                    return this.makeApiRequest(request)
+                        .then(function (result) {
+                        if (result && result.response && result.response.applications) {
+                            return result.response.applications;
                         }
                         else {
                             return [];

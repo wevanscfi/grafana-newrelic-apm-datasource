@@ -9,6 +9,7 @@ class NewRelicQueryCtrl extends QueryCtrl {
   datasource: any;
   type: any;
   metrics: any[];
+  apps: any[];
 
   /** @ngInject **/
   constructor($scope, $injector) {
@@ -20,12 +21,14 @@ class NewRelicQueryCtrl extends QueryCtrl {
 
     let target_defaults = {
       type: 'applications',
+      app_id: null,
       target: 'Select namespace',
       value: 'Select metric'
     }
     _.defaultsDeep(this.target, target_defaults);
 
     this.getMetrics();
+    this.getApplications();
   };
 
   getMetrics() {
@@ -60,6 +63,23 @@ class NewRelicQueryCtrl extends QueryCtrl {
         return [];
       }
     });
+  }
+
+  getApplications() {
+    if (this.apps) {
+      return Promise.resolve(this.apps);
+    } else {
+      return this.datasource.getApplications()
+      .then(apps => {
+        apps = _.map(apps, app => {
+          return { name: app.name, id: app.id };
+        });
+        apps.push({ name: 'Default', id: null });
+        this.apps = apps;
+
+        return apps;
+      });
+    }
   }
 
   onChangeInternal() {

@@ -7,11 +7,13 @@ declare class NewRelicQueryCtrl extends QueryCtrl {
     datasource: any;
     type: any;
     metrics: any[];
+    apps: any[];
     /** @ngInject **/
     constructor($scope: any, $injector: any);
     getMetrics(): any;
     getMetricNamespaces(): any;
     getMetricValues(): any;
+    getApplications(): any;
     onChangeInternal(): void;
 }
 export { NewRelicQueryCtrl };
