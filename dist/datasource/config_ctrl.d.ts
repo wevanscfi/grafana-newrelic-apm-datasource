@@ -1,9 +1,12 @@
 /// <reference path="../typings/tsd.d.ts" />
 export declare class NewRelicDSConfigCtrl {
-    private datasourceSrv;
+    private backendSrv;
     static templateUrl: string;
+    name: string;
     current: any;
+    types: any;
     apps: any[];
-    constructor($scope: any, $injector: any, datasourceSrv: any);
+    constructor($scope: any, $injector: any, backendSrv: any);
+    getApplications(): any;
     loadApplications(): void;
 }

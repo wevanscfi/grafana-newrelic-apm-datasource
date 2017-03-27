@@ -14,6 +14,7 @@ declare class NewRelicQueryCtrl extends QueryCtrl {
     getMetricNamespaces(): any;
     getMetricValues(): any;
     getApplications(): any;
+    reset(): void;
     onChangeInternal(): void;
 }
 export { NewRelicQueryCtrl };

@@ -41,7 +41,7 @@ System.register(['app/plugins/sdk', 'lodash'], function(exports_1) {
                         return Promise.resolve(this.metrics);
                     }
                     else {
-                        return this.datasource.getMetricNames()
+                        return this.datasource.getMetricNames(this.target.app_id)
                             .then(function (metrics) {
                             _this.metrics = metrics;
                             return metrics;
@@ -85,6 +85,12 @@ System.register(['app/plugins/sdk', 'lodash'], function(exports_1) {
                             return apps;
                         });
                     }
+                };
+                NewRelicQueryCtrl.prototype.reset = function () {
+                    console.log('reset');
+                    this.metrics = null;
+                    this.getMetrics();
+                    this.refresh();
                 };
                 NewRelicQueryCtrl.prototype.onChangeInternal = function () {
                     this.refresh();

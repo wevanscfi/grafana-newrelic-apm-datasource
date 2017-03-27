@@ -35,7 +35,7 @@ class NewRelicQueryCtrl extends QueryCtrl {
     if (this.metrics) {
       return Promise.resolve(this.metrics);
     } else {
-      return this.datasource.getMetricNames()
+      return this.datasource.getMetricNames(this.target.app_id)
       .then(metrics => {
         this.metrics = metrics;
         return metrics;
@@ -80,6 +80,13 @@ class NewRelicQueryCtrl extends QueryCtrl {
         return apps;
       });
     }
+  }
+
+  reset() {
+    console.log('reset');
+    this.metrics = null;
+    this.getMetrics();
+    this.refresh();
   }
 
   onChangeInternal() {
