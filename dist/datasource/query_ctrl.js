@@ -87,7 +87,6 @@ System.register(['app/plugins/sdk', 'lodash'], function(exports_1) {
                     }
                 };
                 NewRelicQueryCtrl.prototype.reset = function () {
-                    console.log('reset');
                     this.metrics = null;
                     this.getMetrics();
                     this.refresh();

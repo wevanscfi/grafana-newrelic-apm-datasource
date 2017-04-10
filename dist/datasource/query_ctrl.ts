@@ -83,7 +83,6 @@ class NewRelicQueryCtrl extends QueryCtrl {
   }
 
   reset() {
-    console.log('reset');
     this.metrics = null;
     this.getMetrics();
     this.refresh();
