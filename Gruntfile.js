@@ -34,16 +34,15 @@ module.exports = function(grunt) {
 
     typescript: {
       base: {
-        src: ['src/**/*.ts'],
+        src: ['dist/**/*.ts'],
         dest: 'dist/',
         options: {
-          module: 'system', //or commonjs 
+          module: 'system', //or commonjs
           target: 'es5', //or es3
           sourceMap: true,
           declaration: true,
           emitDecoratorMetadata: true,
           experimentalDecorators: true,
-          sourceMap: true,
           noImplicitAny: false,
         }
       }

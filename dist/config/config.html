@@ -1,0 +1,24 @@
+<h3 class="page-heading">New Relic API Credentials</h3>
+
+<div class="gf-form-group">
+  <div class="gf-form-inline">
+    <div class="gf-form">
+      <label class="gf-form-label width-7">API Key</label>
+      <info-popover mode="right-absolute">
+        The API key generated for authorization in the APM dashboard.
+      </info-popover>
+      <!-- Hidden input to stop chrome from autofilling -->
+      <input style="display:none;" type="password" name="anotherfakename" />
+      <input type="password" class="gf-form-input width-20" ng-model="ctrl.appModel.secureJsonData.apiKey" ng-if="!ctrl.appModel.jsonData.tokenSet" placeholder="api key"/>
+    </div>
+    <div ng-if="ctrl.appModel.jsonData.tokenSet" class="gf-form">
+      <input type="text" class="gf-form-input width-20" disabled="disabled" value="saved" />
+      <div ng-if="ctrl.appModel.enabled">
+        <i class="fa fa-exclamation-triangle" ng-if="!ctrl.apiValidated" alt="Could not validate api Token."></i>
+      </div>
+    </div>
+    <div class="gf-form">
+      <a class="btn btn-danger" href="#" ng-click="ctrl.reset()" ng-if="ctrl.appModel.jsonData.tokenSet">reset</a>
+    </div>
+  </div>
+</div>

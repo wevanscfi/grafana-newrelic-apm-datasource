@@ -1,0 +1,53 @@
+<query-editor-row query-ctrl="ctrl">
+  <div class="gf-form-inline">
+    <div class="gf-form gf-form--grow">
+      <select ng-model="ctrl.target.type" class="gf-form-input width-8"
+                ng-options="type.value as type.label for type in ctrl.metric_types"
+                ng-change="ctrl.reset()">
+      </select>
+      <label class="gf-form-label gf-form-label--grow"></label>
+      <label ng-show="ctrl.target.type == 'servers'" class="gf-form-label query-keyword width-8">SERVER ID</label>
+      <input ng-show="ctrl.target.type == 'servers'" type="text" class="gf-form-input width-12" ng-model="ctrl.target.server_id" spellcheck="false" ng-blur="ctrl.refresh()"></input>
+
+      <label ng-show="ctrl.target.type == 'applications'"
+        class="gf-form-label query-keyword width-8">
+        Application
+      </label>
+      <select ng-show="ctrl.target.type == 'applications'"
+        ng-model="ctrl.target.app_id" class="gf-form-input width-15"
+        ng-options="app.id as app.name for app in ctrl.apps"
+        ng-change="ctrl.reset()">
+      </select>
+    </div>
+  </div>
+
+  <div class="gf-form-inline">
+    <div class="gf-form">
+      <label class="gf-form-label query-keyword width-8">Namespace</label>
+    </div>
+    <metric-segment-model property="ctrl.target.target"
+      get-options="ctrl.getMetricNamespaces()"
+      on-change="ctrl.onChangeInternal()"
+      custom="true">
+    </metric-segment-model>
+
+    <div class="gf-form">
+      <label class="gf-form-label query-keyword width-8">Metric</label>
+    </div>
+    <metric-segment-model property="ctrl.target.value"
+      get-options="ctrl.getMetricValues()"
+      on-change="ctrl.onChangeInternal()">
+    </metric-segment-model>
+
+    <div class="gf-form gf-form--grow">
+      <div class="gf-form-label gf-form-label--grow"></div>
+    </div>
+  </div>
+
+  <div class="gf-form-inline">
+    <div class="gf-form gf-form--grow">
+      <label class="gf-form-label query-keyword width-8">Alias By</label>
+      <input type="text" class="gf-form-input" ng-model="ctrl.target.alias" spellcheck='false' placeholder="Naming pattern" ng-blur="ctrl.refresh()">
+    </div>
+  </div>
+</query-editor-row>
