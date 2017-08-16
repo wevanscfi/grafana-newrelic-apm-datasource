@@ -23,16 +23,22 @@ class NewRelicDatasource {
       /* Todo: clean up defaulting app_id based on datasource config */
       var app_id = target.app_id || this.appId;
       var id = type === 'applications' ? app_id : target.server_id;
+
+      var offset = typeof target.offset !== "undefined" ? this._convertToSeconds(target.offset) : 0;
+      var to = moment(options.range.to.format()).subtract(offset, "seconds");
+      var from = moment(options.range.from.format()).subtract(offset, "seconds");
+
       var request = {
         refId: target.refId,
         alias: target.alias,
         url: '/v2/' + type + '/' + id + '/metrics/data.json',
         params: {
           names: [target.target],
-          to: options.range.to,
-          from: options.range.from,
+          to: to,
+          from: from,
           period: this._convertToSeconds(options.interval || "60s")
-        }
+        },
+        offset: offset
       };
       if (value) {
         request.params["values"] = [value];
@@ -67,6 +73,9 @@ class NewRelicDatasource {
       case "d":
         seconds = seconds * 86400;
         break;
+      case "w":
+        seconds = seconds * 86400 * 7;
+        break;
     }
     return seconds;
   }
@@ -76,27 +85,27 @@ class NewRelicDatasource {
     var metrics = results.response.metric_data.metrics;
     metrics.forEach(metric => {
       metric.alias = results.alias;
-      targetList = targetList.concat(this._parseseacrhTarget(metric));
+      targetList = targetList.concat(this._parsesearchTarget(metric, results.offset));
     });
     return targetList;
   }
 
-  _parseseacrhTarget(metric) {
+  _parsesearchTarget(metric, offset) {
     var targets = Object.keys(metric.timeslices[0].values);
     var targetData = [];
     targets.forEach(target => {
       targetData.push({
         target: this._parseTargetAlias(metric, target),
-        datapoints: this._getTargetSeries(target, metric)
+        datapoints: this._getTargetSeries(target, metric, offset)
       });
     });
     return targetData;
   }
 
-  _getTargetSeries(target, metric) {
+  _getTargetSeries(target, metric, offset) {
     var series = [];
     metric.timeslices.forEach(function(slice){
-      series.push([slice.values[target], moment(slice.to).valueOf()]);
+      series.push([slice.values[target], moment(slice.to).add(offset, "seconds").valueOf()]);
     });
     return series;
   }
@@ -172,7 +181,7 @@ class NewRelicDatasource {
 
     return this.backendSrv.datasourceRequest(options)
     .then(result => {
-      return {response: result.data, refId: request.refId, alias: request.alias };
+      return {response: result.data, refId: request.refId, alias: request.alias, offset: request.offset };
     })
     .catch(err => {
       if (err.status !== 0 || err.status >= 300) {

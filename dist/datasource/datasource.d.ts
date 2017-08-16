@@ -12,8 +12,8 @@ declare class NewRelicDatasource {
     testDatasource(): any;
     _convertToSeconds(interval: any): number;
     _parseMetricResults(results: any): any[];
-    _parseseacrhTarget(metric: any): any[];
-    _getTargetSeries(target: any, metric: any): any[];
+    _parsesearchTarget(metric: any, offset: any): any[];
+    _getTargetSeries(target: any, metric: any, offset: any): any[];
     _parseTargetAlias(metric: any, value: any): any;
     makeMultipleRequests(requests: any): Promise<{}>;
     getMetricNames(application_id: any): any;
