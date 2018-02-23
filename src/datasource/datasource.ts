@@ -24,14 +24,15 @@ class NewRelicDatasource {
       var app_id = target.app_id || this.appId;
       var id = type === 'applications' ? app_id : target.server_id;
 
-      var offset = typeof target.offset !== "undefined" ? this._convertToSeconds(target.offset) : 0;
-      var to = moment(options.range.to.format()).subtract(offset, "seconds");
-      var from = moment(options.range.from.format()).subtract(offset, "seconds");
+      var offset = typeof target.offset !== 'undefined' ? this._convertToSeconds(target.offset) : 0;
+      var to = moment(options.range.to.format()).subtract(offset, 'seconds');
+      var from = moment(options.range.from.format()).subtract(offset, 'seconds');
+      var host_url_extension = target.host_id ? '/hosts/' + target.host_id : '';
 
       var request = {
         refId: target.refId,
         alias: target.alias,
-        url: '/v2/' + type + '/' + id + '/metrics/data.json',
+        url: '/v2/' + type + '/' + id + host_url_extension + '/metrics/data.json',
         params: {
           names: [target.target],
           to: to,
