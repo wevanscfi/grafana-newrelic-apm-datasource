@@ -6,14 +6,14 @@
                 ng-change="ctrl.reset()">
       </select>
 
-      <label ng-show="ctrl.target.type == 'servers'" class="gf-form-label query-keyword width-8">Server ID</label>
+      <label ng-show="ctrl.target.type == 'servers'" class="gf-form-label query-keyword width-9">Server ID</label>
       <input ng-show="ctrl.target.type == 'servers'" type="text" class="gf-form-input width-12" ng-model="ctrl.target.server_id" spellcheck="false" ng-blur="ctrl.refresh()"></input>
 
-      <label ng-show="ctrl.target.type == 'components'" class="gf-form-label query-keyword width-8">Component ID</label>
+      <label ng-show="ctrl.target.type == 'components'" class="gf-form-label query-keyword width-9">Component ID</label>
       <input ng-show="ctrl.target.type == 'components'" type="text" class="gf-form-input width-12" ng-model="ctrl.target.server_id" spellcheck="false" ng-blur="ctrl.refresh()"></input>
 
       <label ng-show="ctrl.target.type == 'applications'"
-        class="gf-form-label query-keyword width-8">
+        class="gf-form-label query-keyword width-9">
         Application
       </label>
       <select ng-show="ctrl.target.type == 'applications'"
