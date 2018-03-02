@@ -22,7 +22,7 @@ class NewRelicDatasource {
       var type = target.type || 'applications';
       /* Todo: clean up defaulting app_id based on datasource config */
       var app_id = target.app_id || this.appId;
-      var id = type === 'applications' || type === 'components' ? app_id : target.server_id;
+      var id = type === 'servers' || type === 'components' ? target.server_id : app_id;
 
       var offset = typeof target.offset !== 'undefined' ? this._convertToSeconds(target.offset) : 0;
       var to = moment(options.range.to.format()).subtract(offset, 'seconds');
