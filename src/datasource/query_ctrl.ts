@@ -16,7 +16,8 @@ class NewRelicQueryCtrl extends QueryCtrl {
     super($scope, $injector);
     this.metric_types = [
       { value: 'applications', label: 'Application' },
-      { value: 'servers', label: 'Server'}
+      { value: 'servers', label: 'Server'},
+      { value: 'components', label: 'Component'},
     ];
 
     let target_defaults = {
