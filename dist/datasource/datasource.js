@@ -26,17 +26,22 @@ System.register(['moment'], function(exports_1) {
                         var type = target.type || 'applications';
                         /* Todo: clean up defaulting app_id based on datasource config */
                         var app_id = target.app_id || _this.appId;
-                        var id = type === 'applications' ? app_id : target.server_id;
+                        var id = type === 'servers' ? target.server_id : (type === 'components' ? target.component_id : app_id);
+                        var offset = typeof target.offset !== 'undefined' ? _this._convertToSeconds(target.offset) : 0;
+                        var to = moment_1.default(options.range.to.format()).subtract(offset, 'seconds');
+                        var from = moment_1.default(options.range.from.format()).subtract(offset, 'seconds');
+                        var host_url_extension = target.host_id ? '/hosts/' + target.host_id : '';
                         var request = {
                             refId: target.refId,
                             alias: target.alias,
-                            url: '/v2/' + type + '/' + id + '/metrics/data.json',
+                            url: '/v2/' + type + '/' + id + host_url_extension + '/metrics/data.json',
                             params: {
                                 names: [target.target],
-                                to: options.range.to,
-                                from: options.range.from,
+                                to: to,
+                                from: from,
                                 period: _this._convertToSeconds(options.interval || "60s")
-                            }
+                            },
+                            offset: offset
                         };
                         if (value) {
                             request.params["values"] = [value];
@@ -68,6 +73,9 @@ System.register(['moment'], function(exports_1) {
                         case "d":
                             seconds = seconds * 86400;
                             break;
+                        case "w":
+                            seconds = seconds * 86400 * 7;
+                            break;
                     }
                     return seconds;
                 };
@@ -77,26 +85,26 @@ System.register(['moment'], function(exports_1) {
                     var metrics = results.response.metric_data.metrics;
                     metrics.forEach(function (metric) {
                         metric.alias = results.alias;
-                        targetList = targetList.concat(_this._parseseacrhTarget(metric));
+                        targetList = targetList.concat(_this._parsesearchTarget(metric, results.offset));
                     });
                     return targetList;
                 };
-                NewRelicDatasource.prototype._parseseacrhTarget = function (metric) {
+                NewRelicDatasource.prototype._parsesearchTarget = function (metric, offset) {
                     var _this = this;
                     var targets = Object.keys(metric.timeslices[0].values);
                     var targetData = [];
                     targets.forEach(function (target) {
                         targetData.push({
                             target: _this._parseTargetAlias(metric, target),
-                            datapoints: _this._getTargetSeries(target, metric)
+                            datapoints: _this._getTargetSeries(target, metric, offset)
                         });
                     });
                     return targetData;
                 };
-                NewRelicDatasource.prototype._getTargetSeries = function (target, metric) {
+                NewRelicDatasource.prototype._getTargetSeries = function (target, metric, offset) {
                     var series = [];
                     metric.timeslices.forEach(function (slice) {
-                        series.push([slice.values[target], moment_1.default(slice.to).valueOf()]);
+                        series.push([slice.values[target], moment_1.default(slice.to).add(offset, "seconds").valueOf()]);
                     });
                     return series;
                 };
@@ -126,12 +134,11 @@ System.register(['moment'], function(exports_1) {
                         });
                     });
                 };
-                NewRelicDatasource.prototype.getMetricNames = function (application_id) {
-                    if (!application_id) {
-                        application_id = this.appId;
-                    }
+                NewRelicDatasource.prototype.getMetricNames = function (type, id) {
+                    if (id == null)
+                        return new Promise(function (resolve) { resolve([]); });
                     var request = {
-                        url: '/v2/applications/' + application_id + '/metrics.json'
+                        url: '/v2/' + type + '/' + id + '/metrics.json'
                     };
                     return this.makeApiRequest(request)
                         .then(function (result) {
@@ -142,6 +149,18 @@ System.register(['moment'], function(exports_1) {
                             return [];
                         }
                     });
+                };
+                NewRelicDatasource.prototype.getAppMetricNames = function (application_id) {
+                    if (!application_id) {
+                        application_id = this.appId;
+                    }
+                    return this.getMetricNames('applications', application_id);
+                };
+                NewRelicDatasource.prototype.getServerMetricNames = function (server_id) {
+                    return this.getMetricNames('servers', server_id);
+                };
+                NewRelicDatasource.prototype.getComponentMetricNames = function (component_id) {
+                    return this.getMetricNames('components', component_id);
                 };
                 NewRelicDatasource.prototype.getApplications = function () {
                     var request = {
@@ -157,6 +176,30 @@ System.register(['moment'], function(exports_1) {
                         }
                     });
                 };
+                NewRelicDatasource.prototype.getComponents = function () {
+                    var request = {
+                        url: '/v2/components.json'
+                    };
+                    return this.makeApiRequest(request).then(function (result) {
+                        if (result && result.response && result.response.components) {
+                            return result.response.components;
+                        }
+                        else
+                            return [];
+                    });
+                };
+                NewRelicDatasource.prototype.getServers = function () {
+                    var request = {
+                        url: '/v2/servers.json'
+                    };
+                    return this.makeApiRequest(request).then(function (result) {
+                        if (result && result.response && result.response.servers) {
+                            return result.response.servers;
+                        }
+                        else
+                            return [];
+                    });
+                };
                 NewRelicDatasource.prototype.makeApiRequest = function (request) {
                     var options = {
                         method: "get",
@@ -166,7 +209,7 @@ System.register(['moment'], function(exports_1) {
                     };
                     return this.backendSrv.datasourceRequest(options)
                         .then(function (result) {
-                        return { response: result.data, refId: request.refId, alias: request.alias };
+                        return { response: result.data, refId: request.refId, alias: request.alias, offset: request.offset };
                     })
                         .catch(function (err) {
                         if (err.status !== 0 || err.status >= 300) {

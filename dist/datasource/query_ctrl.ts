@@ -10,13 +10,16 @@ class NewRelicQueryCtrl extends QueryCtrl {
   type: any;
   metrics: any[];
   apps: any[];
+  components: any[];
+  servers: any[];
 
   /** @ngInject **/
   constructor($scope, $injector) {
     super($scope, $injector);
     this.metric_types = [
       { value: 'applications', label: 'Application' },
-      { value: 'servers', label: 'Server'}
+      { value: 'servers', label: 'Server'},
+      { value: 'components', label: 'Component'},
     ];
 
     let target_defaults = {
@@ -29,17 +32,33 @@ class NewRelicQueryCtrl extends QueryCtrl {
 
     this.getMetrics();
     this.getApplications();
+    this.getComponents();
+    this.getServers();
   };
 
   getMetrics() {
     if (this.metrics) {
       return Promise.resolve(this.metrics);
     } else {
-      return this.datasource.getMetricNames(this.target.app_id)
-      .then(metrics => {
-        this.metrics = metrics;
-        return metrics;
-      });
+      if (this.type === 'components') {
+        return this.datasource.getComponentMetricNames(this.target.component_id)
+            .then(metrics => {
+              this.metrics = metrics;
+              return metrics;
+            });
+      } else if (this.type === 'servers') {
+        return this.datasource.getServerMetricNames(this.target.server_id)
+            .then(metrics => {
+              this.metrics = metrics;
+              return metrics;
+            });
+      } else {
+        return this.datasource.getAppMetricNames(this.target.app_id)
+            .then(metrics => {
+              this.metrics = metrics;
+              return metrics;
+            });
+      }
     }
   }
 
@@ -81,8 +100,37 @@ class NewRelicQueryCtrl extends QueryCtrl {
       });
     }
   }
+  
+  getComponents() {
+    if (this.components) {
+      return Promise.resolve(this.components);
+    } else {
+      return this.datasource.getComponents().then(components => {
+        components = _.map(components, component => {
+          return {name: component.name, id: component.id};
+        });
+        this.components = components;
+        return components;
+      });
+    }
+  }
+
+  getServers() {
+    if (this.servers) {
+      return Promise.resolve(this.servers);
+    } else {
+      return this.datasource.getServers().then(servers => {
+        servers = _.map(servers, server => {
+          return {name: server.name, id: server.id};
+        });
+        this.servers = servers;
+        return servers;
+      });
+    }
+  }
 
   reset() {
+    this.type = this.target.type;
     this.metrics = null;
     this.getMetrics();
     this.refresh();

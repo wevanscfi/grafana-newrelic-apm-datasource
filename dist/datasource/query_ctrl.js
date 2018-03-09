@@ -22,7 +22,8 @@ System.register(['app/plugins/sdk', 'lodash'], function(exports_1) {
                     _super.call(this, $scope, $injector);
                     this.metric_types = [
                         { value: 'applications', label: 'Application' },
-                        { value: 'servers', label: 'Server' }
+                        { value: 'servers', label: 'Server' },
+                        { value: 'components', label: 'Component' },
                     ];
                     var target_defaults = {
                         type: 'applications',
@@ -33,6 +34,8 @@ System.register(['app/plugins/sdk', 'lodash'], function(exports_1) {
                     lodash_1.default.defaultsDeep(this.target, target_defaults);
                     this.getMetrics();
                     this.getApplications();
+                    this.getComponents();
+                    this.getServers();
                 }
                 ;
                 NewRelicQueryCtrl.prototype.getMetrics = function () {
@@ -41,11 +44,27 @@ System.register(['app/plugins/sdk', 'lodash'], function(exports_1) {
                         return Promise.resolve(this.metrics);
                     }
                     else {
-                        return this.datasource.getMetricNames(this.target.app_id)
-                            .then(function (metrics) {
-                            _this.metrics = metrics;
-                            return metrics;
-                        });
+                        if (this.type === 'components') {
+                            return this.datasource.getComponentMetricNames(this.target.component_id)
+                                .then(function (metrics) {
+                                _this.metrics = metrics;
+                                return metrics;
+                            });
+                        }
+                        else if (this.type === 'servers') {
+                            return this.datasource.getServerMetricNames(this.target.server_id)
+                                .then(function (metrics) {
+                                _this.metrics = metrics;
+                                return metrics;
+                            });
+                        }
+                        else {
+                            return this.datasource.getAppMetricNames(this.target.app_id)
+                                .then(function (metrics) {
+                                _this.metrics = metrics;
+                                return metrics;
+                            });
+                        }
                     }
                 };
                 NewRelicQueryCtrl.prototype.getMetricNamespaces = function () {
@@ -86,7 +105,38 @@ System.register(['app/plugins/sdk', 'lodash'], function(exports_1) {
                         });
                     }
                 };
+                NewRelicQueryCtrl.prototype.getComponents = function () {
+                    var _this = this;
+                    if (this.components) {
+                        return Promise.resolve(this.components);
+                    }
+                    else {
+                        return this.datasource.getComponents().then(function (components) {
+                            components = lodash_1.default.map(components, function (component) {
+                                return { name: component.name, id: component.id };
+                            });
+                            _this.components = components;
+                            return components;
+                        });
+                    }
+                };
+                NewRelicQueryCtrl.prototype.getServers = function () {
+                    var _this = this;
+                    if (this.servers) {
+                        return Promise.resolve(this.servers);
+                    }
+                    else {
+                        return this.datasource.getServers().then(function (servers) {
+                            servers = lodash_1.default.map(servers, function (server) {
+                                return { name: server.name, id: server.id };
+                            });
+                            _this.servers = servers;
+                            return servers;
+                        });
+                    }
+                };
                 NewRelicQueryCtrl.prototype.reset = function () {
+                    this.type = this.target.type;
                     this.metrics = null;
                     this.getMetrics();
                     this.refresh();
