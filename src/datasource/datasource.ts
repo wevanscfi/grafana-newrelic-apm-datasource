@@ -205,8 +205,8 @@ class NewRelicDatasource {
     };
 
     return this.makeApiRequest(request).then(result => {
-          if (result && result.response && result.response.components) {
-            return result.response.components;
+          if (result && result.response && result.response.servers) {
+            return result.response.servers;
           } else return [];
         }
     )

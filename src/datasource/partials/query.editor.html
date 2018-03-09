@@ -6,7 +6,7 @@
                 ng-change="ctrl.reset()">
       </select>
 
-      <label ng-show="ctrl.target.type == 'servers'" class="gf-form-label query-keyword width-9">Server ID</label>
+      <label ng-show="ctrl.target.type == 'servers'" class="gf-form-label query-keyword width-9">Server</label>
       <!--<input ng-show="ctrl.target.type == 'servers'" type="text" class="gf-form-input width-12" ng-model="ctrl.target.server_id" spellcheck="false" ng-blur="ctrl.refresh()"/>-->
       <select ng-show="ctrl.target.type == 'servers'"
               ng-model="ctrl.target.server_id"
@@ -15,7 +15,7 @@
               ng-change="ctrl.reset()">
       </select>
 
-      <label ng-show="ctrl.target.type == 'components'" class="gf-form-label query-keyword width-9">Component ID</label>
+      <label ng-show="ctrl.target.type == 'components'" class="gf-form-label query-keyword width-9">Component</label>
       <!--<input ng-show="ctrl.target.type == 'components'" type="text" class="gf-form-input width-12" ng-model="ctrl.target.server_id" spellcheck="false" ng-blur="ctrl.refresh()"/>-->
       <select ng-show="ctrl.target.type == 'components'"
               ng-model="ctrl.target.component_id"
