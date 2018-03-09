@@ -183,7 +183,7 @@ class NewRelicDatasource {
     });
   }
 
-  getComponentNames() {
+  getComponents() {
     let request = {
       url: '/v2/components.json'
     };
