@@ -11,6 +11,7 @@ class NewRelicQueryCtrl extends QueryCtrl {
   metrics: any[];
   apps: any[];
   components: any[];
+  servers: any[];
 
   /** @ngInject **/
   constructor($scope, $injector) {
@@ -109,6 +110,20 @@ class NewRelicQueryCtrl extends QueryCtrl {
         });
         this.components = components;
         return components;
+      });
+    }
+  }
+
+  getServers() {
+    if (this.servers) {
+      return Promise.resolve(this.servers);
+    } else {
+      return this.datasource.getServers().then(servers => {
+        servers = _.map(servers, server => {
+          return {name: server.name, id: server.id};
+        });
+        this.servers = servers;
+        return servers;
       });
     }
   }

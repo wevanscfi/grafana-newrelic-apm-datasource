@@ -7,13 +7,19 @@
       </select>
 
       <label ng-show="ctrl.target.type == 'servers'" class="gf-form-label query-keyword width-9">Server ID</label>
-      <input ng-show="ctrl.target.type == 'servers'" type="text" class="gf-form-input width-12" ng-model="ctrl.target.server_id" spellcheck="false" ng-blur="ctrl.refresh()"/>
+      <!--<input ng-show="ctrl.target.type == 'servers'" type="text" class="gf-form-input width-12" ng-model="ctrl.target.server_id" spellcheck="false" ng-blur="ctrl.refresh()"/>-->
+      <select ng-show="ctrl.target.type == 'servers'"
+              ng-model="ctrl.target.server_id"
+              class="gf-form-input width-30"
+              ng-options="server.id as server.name for server in ctrl.servers"
+              ng-change="ctrl.reset()">
+      </select>
 
       <label ng-show="ctrl.target.type == 'components'" class="gf-form-label query-keyword width-9">Component ID</label>
       <!--<input ng-show="ctrl.target.type == 'components'" type="text" class="gf-form-input width-12" ng-model="ctrl.target.server_id" spellcheck="false" ng-blur="ctrl.refresh()"/>-->
       <select ng-show="ctrl.target.type == 'components'"
               ng-model="ctrl.target.component_id"
-              class="gf-form-input width-15"
+              class="gf-form-input width-30"
               ng-options="component.id as component.name for component in ctrl.components"
               ng-change="ctrl.reset()">
       </select>

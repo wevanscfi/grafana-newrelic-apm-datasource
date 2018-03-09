@@ -198,6 +198,19 @@ class NewRelicDatasource {
       }
     )
   }
+  
+  getServers() {
+    let request = {
+      url: '/v2/servers.json'
+    };
+
+    return this.makeApiRequest(request).then(result => {
+          if (result && result.response && result.response.components) {
+            return result.response.components;
+          } else return [];
+        }
+    )
+  }
 
   makeApiRequest(request) {
     var options: any = {
