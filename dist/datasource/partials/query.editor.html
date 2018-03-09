@@ -5,12 +5,27 @@
                 ng-options="type.value as type.label for type in ctrl.metric_types"
                 ng-change="ctrl.reset()">
       </select>
-      <label class="gf-form-label gf-form-label--grow"></label>
-      <label ng-show="ctrl.target.type == 'servers'" class="gf-form-label query-keyword width-8">SERVER ID</label>
-      <input ng-show="ctrl.target.type == 'servers'" type="text" class="gf-form-input width-12" ng-model="ctrl.target.server_id" spellcheck="false" ng-blur="ctrl.refresh()"></input>
+
+      <label ng-show="ctrl.target.type == 'servers'" class="gf-form-label query-keyword width-9">Server</label>
+      <!--<input ng-show="ctrl.target.type == 'servers'" type="text" class="gf-form-input width-12" ng-model="ctrl.target.server_id" spellcheck="false" ng-blur="ctrl.refresh()"/>-->
+      <select ng-show="ctrl.target.type == 'servers'"
+              ng-model="ctrl.target.server_id"
+              class="gf-form-input width-30"
+              ng-options="server.id as server.name for server in ctrl.servers"
+              ng-change="ctrl.reset()">
+      </select>
+
+      <label ng-show="ctrl.target.type == 'components'" class="gf-form-label query-keyword width-9">Component</label>
+      <!--<input ng-show="ctrl.target.type == 'components'" type="text" class="gf-form-input width-12" ng-model="ctrl.target.server_id" spellcheck="false" ng-blur="ctrl.refresh()"/>-->
+      <select ng-show="ctrl.target.type == 'components'"
+              ng-model="ctrl.target.component_id"
+              class="gf-form-input width-30"
+              ng-options="component.id as component.name for component in ctrl.components"
+              ng-change="ctrl.reset()">
+      </select>
 
       <label ng-show="ctrl.target.type == 'applications'"
-        class="gf-form-label query-keyword width-8">
+        class="gf-form-label query-keyword width-9">
         Application
       </label>
       <select ng-show="ctrl.target.type == 'applications'"
@@ -18,6 +33,7 @@
         ng-options="app.id as app.name for app in ctrl.apps"
         ng-change="ctrl.reset()">
       </select>
+      <label class="gf-form-label gf-form-label--grow"></label>
     </div>
   </div>
 
@@ -54,6 +70,15 @@
     <div class="gf-form">
       <label class="gf-form-label query-keyword width-8">Offset</label>
       <input type="text" class="gf-form-input" ng-model="ctrl.target.offset" spellcheck='false' placeholder="Offset in format 1s, 1h, 1d, etc." ng-blur="ctrl.refresh()">
+    </div>
+    <div class="gf-form gf-form--grow">
+      <div class="gf-form-label gf-form-label--grow"></div>
+    </div>
+  </div>
+  <div class="gf-form-inline" ng-show="ctrl.target.type == 'applications'">
+    <div class="gf-form">
+      <label class="gf-form-label query-keyword width-8">Host ID</label>
+      <input type="text" class="gf-form-input" ng-model="ctrl.target.host_id" spellcheck='false' placeholder="e.g. 123456" ng-blur="ctrl.refresh()">
     </div>
     <div class="gf-form gf-form--grow">
       <div class="gf-form-label gf-form-label--grow"></div>

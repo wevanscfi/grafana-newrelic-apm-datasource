@@ -22,16 +22,17 @@ class NewRelicDatasource {
       var type = target.type || 'applications';
       /* Todo: clean up defaulting app_id based on datasource config */
       var app_id = target.app_id || this.appId;
-      var id = type === 'applications' ? app_id : target.server_id;
+      var id = type === 'servers' ? target.server_id : (type === 'components' ? target.component_id : app_id);
 
-      var offset = typeof target.offset !== "undefined" ? this._convertToSeconds(target.offset) : 0;
-      var to = moment(options.range.to.format()).subtract(offset, "seconds");
-      var from = moment(options.range.from.format()).subtract(offset, "seconds");
+      var offset = typeof target.offset !== 'undefined' ? this._convertToSeconds(target.offset) : 0;
+      var to = moment(options.range.to.format()).subtract(offset, 'seconds');
+      var from = moment(options.range.from.format()).subtract(offset, 'seconds');
+      var host_url_extension = target.host_id ? '/hosts/' + target.host_id : '';
 
       var request = {
         refId: target.refId,
         alias: target.alias,
-        url: '/v2/' + type + '/' + id + '/metrics/data.json',
+        url: '/v2/' + type + '/' + id + host_url_extension + '/metrics/data.json',
         params: {
           names: [target.target],
           to: to,
@@ -136,24 +137,38 @@ class NewRelicDatasource {
       });
     });
   }
-
-  getMetricNames(application_id) {
-    if (!application_id) {
-      application_id = this.appId;
-    }
+  
+  getMetricNames(type, id) {
+    if (id == null)
+        return new Promise((resolve) => {resolve([])});
 
     let request = {
-      url: '/v2/applications/' + application_id + '/metrics.json'
+      url: '/v2/' + type + '/' + id + '/metrics.json'
     };
 
     return this.makeApiRequest(request)
-    .then(result => {
-      if (result && result.response && result.response.metrics) {
-        return result.response.metrics;
-      } else {
-        return [];
-      }
-    });
+        .then(result => {
+          if (result && result.response && result.response.metrics) {
+            return result.response.metrics;
+          } else {
+            return [];
+          }
+        });
+  }
+
+  getAppMetricNames(application_id) {
+    if (!application_id) {
+      application_id = this.appId;
+    }
+    return this.getMetricNames('applications', application_id);
+  }
+  
+  getServerMetricNames(server_id) {
+    return this.getMetricNames('servers', server_id);
+  }
+  
+  getComponentMetricNames(component_id) {
+    return this.getMetricNames('components', component_id);
   }
 
   getApplications() {
@@ -169,6 +184,32 @@ class NewRelicDatasource {
         return [];
       }
     });
+  }
+
+  getComponents() {
+    let request = {
+      url: '/v2/components.json'
+    };
+    
+    return this.makeApiRequest(request).then(result => {
+        if (result && result.response && result.response.components) {
+          return result.response.components;
+        } else return [];
+      }
+    )
+  }
+  
+  getServers() {
+    let request = {
+      url: '/v2/servers.json'
+    };
+
+    return this.makeApiRequest(request).then(result => {
+          if (result && result.response && result.response.servers) {
+            return result.response.servers;
+          } else return [];
+        }
+    )
   }
 
   makeApiRequest(request) {
