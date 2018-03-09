@@ -140,7 +140,7 @@ class NewRelicDatasource {
   
   getMetricNames(type, id) {
     if (id == null)
-        return [];
+        return new Promise((resolve) => {resolve([])});
 
     let request = {
       url: '/v2/' + type + '/' + id + '/metrics.json'
