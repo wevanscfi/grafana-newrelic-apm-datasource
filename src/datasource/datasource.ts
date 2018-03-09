@@ -22,7 +22,7 @@ class NewRelicDatasource {
       var type = target.type || 'applications';
       /* Todo: clean up defaulting app_id based on datasource config */
       var app_id = target.app_id || this.appId;
-      var id = type === 'servers' || type === 'components' ? target.server_id : app_id;
+      var id = type === 'servers' ? target.server_id : (type === 'components' ? target.component_id : app_id);
 
       var offset = typeof target.offset !== 'undefined' ? this._convertToSeconds(target.offset) : 0;
       var to = moment(options.range.to.format()).subtract(offset, 'seconds');
@@ -137,24 +137,35 @@ class NewRelicDatasource {
       });
     });
   }
-
-  getMetricNames(application_id) {
-    if (!application_id) {
-      application_id = this.appId;
-    }
-
+  
+  getMetricNames(type, id) {
     let request = {
-      url: '/v2/applications/' + application_id + '/metrics.json'
+      url: '/v2/' + type + '/' + id + '/metrics.json'
     };
 
     return this.makeApiRequest(request)
-    .then(result => {
-      if (result && result.response && result.response.metrics) {
-        return result.response.metrics;
-      } else {
-        return [];
-      }
-    });
+        .then(result => {
+          if (result && result.response && result.response.metrics) {
+            return result.response.metrics;
+          } else {
+            return [];
+          }
+        });
+  }
+
+  getAppMetricNames(application_id) {
+    if (!application_id) {
+      application_id = this.appId;
+    }
+    return this.getMetricNames('applications', application_id);
+  }
+  
+  getServerMetricNames(server_id) {
+    return this.getMetricNames('servers', server_id);
+  }
+  
+  getComponentMetricNames(component_id) {
+    return this.getMetricNames('components', component_id);
   }
 
   getApplications() {
@@ -170,6 +181,19 @@ class NewRelicDatasource {
         return [];
       }
     });
+  }
+
+  getComponentNames() {
+    let request = {
+      url: '/v2/components.json'
+    };
+    
+    return this.makeApiRequest(request).then(result => {
+        if (result && result.response && result.response.components) {
+          return result.response.components;
+        } else return [];
+      }
+    )
   }
 
   makeApiRequest(request) {

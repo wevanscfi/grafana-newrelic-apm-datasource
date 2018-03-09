@@ -10,6 +10,7 @@ class NewRelicQueryCtrl extends QueryCtrl {
   type: any;
   metrics: any[];
   apps: any[];
+  components: any[];
 
   /** @ngInject **/
   constructor($scope, $injector) {
@@ -30,17 +31,32 @@ class NewRelicQueryCtrl extends QueryCtrl {
 
     this.getMetrics();
     this.getApplications();
+    this.getComponents();
   };
 
   getMetrics() {
     if (this.metrics) {
       return Promise.resolve(this.metrics);
     } else {
-      return this.datasource.getMetricNames(this.target.app_id)
-      .then(metrics => {
-        this.metrics = metrics;
-        return metrics;
-      });
+      if (this.type === 'components') {
+        return this.datasource.getComponentMetricNames(this.target.component_id)
+            .then(metrics => {
+              this.metrics = metrics;
+              return metrics;
+            });
+      } else if (this.type === 'servers') {
+        return this.datasource.getServerMetricNames(this.target.server_id)
+            .then(metrics => {
+              this.metrics = metrics;
+              return metrics;
+            });
+      } else {
+        return this.datasource.getAppMetricNames(this.target.app_id)
+            .then(metrics => {
+              this.metrics = metrics;
+              return metrics;
+            });
+      }
     }
   }
 
@@ -82,8 +98,23 @@ class NewRelicQueryCtrl extends QueryCtrl {
       });
     }
   }
+  
+  getComponents() {
+    if (this.components) {
+      return Promise.resolve(this.components);
+    } else {
+      return this.datasource.getComponents().then(components => {
+        components = _.map(components, component => {
+          return {name: component.name, id: component.id};
+        });
+        this.components = components;
+        return components;
+      });
+    }
+  }
 
   reset() {
+    this.type = this.target.type;
     this.metrics = null;
     this.getMetrics();
     this.refresh();
