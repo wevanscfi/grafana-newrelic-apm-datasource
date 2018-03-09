@@ -33,6 +33,7 @@ class NewRelicQueryCtrl extends QueryCtrl {
     this.getMetrics();
     this.getApplications();
     this.getComponents();
+    this.getServers();
   };
 
   getMetrics() {
