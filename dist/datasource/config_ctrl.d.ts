@@ -7,6 +7,6 @@ export declare class NewRelicDSConfigCtrl {
     types: any;
     apps: any[];
     constructor($scope: any, $injector: any, backendSrv: any);
-    getApplications(): any;
+    getApplications(page?: number): any;
     loadApplications(): void;
 }

@@ -143,14 +143,18 @@ System.register(['moment'], function(exports_1) {
                         }
                     });
                 };
-                NewRelicDatasource.prototype.getApplications = function () {
+                NewRelicDatasource.prototype.getApplications = function (page) {
+                    var _this = this;
+                    if (page === void 0) { page = 1; }
                     var request = {
-                        url: '/v2/applications.json'
+                        url: '/v2/applications.json?page=' + page
                     };
                     return this.makeApiRequest(request)
                         .then(function (result) {
-                        if (result && result.response && result.response.applications) {
-                            return result.response.applications;
+                        if (result && result.response && result.response.applications.length > 1) {
+                            return _this.getApplications(page + 1).then(function (nextApps) {
+                                return result.response.applications.concat(nextApps);
+                            });
                         }
                         else {
                             return [];
