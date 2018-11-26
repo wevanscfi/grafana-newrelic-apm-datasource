@@ -151,7 +151,7 @@ System.register(['moment'], function(exports_1) {
                     };
                     return this.makeApiRequest(request)
                         .then(function (result) {
-                        if (result && result.response && result.response.applications.length > 1) {
+                        if (result && result.response && result.response.applications.length > 0) {
                             return _this.getApplications(page + 1).then(function (nextApps) {
                                 return result.response.applications.concat(nextApps);
                             });

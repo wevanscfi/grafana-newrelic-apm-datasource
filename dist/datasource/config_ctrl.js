@@ -15,7 +15,7 @@ System.register([], function(exports_1) {
                     if (page === void 0) { page = 1; }
                     var promise = this.backendSrv.get('api/plugin-proxy/newrelic-app/v2/applications.json?page=' + page);
                     return promise.then(function (result) {
-                        if (result && result.applications.length > 1) {
+                        if (result && result.applications.length > 0) {
                             return _this.getApplications(page + 1).then(function (nextApps) {
                                 return result.applications.concat(nextApps);
                             });
