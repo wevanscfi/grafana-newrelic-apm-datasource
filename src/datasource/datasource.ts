@@ -153,7 +153,7 @@ class NewRelicDatasource {
     };
     return this.makeApiRequest(request)
     .then(result => {
-      if (result && result.response && result.response.applications.length > 1) {
+      if (result && result.response && result.response.applications.length > 0) {
         return this.getApplications(page+1).then(nextApps => {
           return result.response.applications.concat(nextApps)
         })
